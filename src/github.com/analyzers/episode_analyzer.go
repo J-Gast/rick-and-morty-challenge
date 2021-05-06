@@ -12,13 +12,14 @@ func (episode *EpisodeAnalyzer) Init() {
 
 func (episode EpisodeAnalyzer) GetAllNames(channel chan string) {
 	names := episode.analyzer.GetAllNames()
-
 	for i := range names {
 		channel <- names[i]
 	}
 	close(channel)
 }
 
-func (episode EpisodeAnalyzer) CountLetters(names []string) int {
-	return episode.analyzer.CountLetters(names, "e")
+func (episode EpisodeAnalyzer) CountLetters(names []string, channel chan int) {
+	count := episode.analyzer.CountLetters(names, "e")
+	channel <- count
+	close(channel)
 }

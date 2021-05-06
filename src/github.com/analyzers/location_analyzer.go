@@ -12,13 +12,14 @@ func (location *LocationsAnalyzer) Init() {
 
 func (location LocationsAnalyzer) GetAllNames(channel chan string) {
 	names := location.analyzer.GetAllNames()
-
 	for i := range names {
 		channel <- names[i]
 	}
 	close(channel)
 }
 
-func (location LocationsAnalyzer) CountLetters(names []string) int {
-	return location.analyzer.CountLetters(names, "l")
+func (location LocationsAnalyzer) CountLetters(names []string, channel chan int) {
+	count := location.analyzer.CountLetters(names, "l")
+	channel <- count
+	close(channel)
 }
