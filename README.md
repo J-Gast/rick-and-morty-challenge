@@ -257,7 +257,7 @@ El episodio 41 cuenta con 6 lugares de origen de los personajes
 Tiempo de ejecución: 1.068734579s
 ```
 
-Todo fue hecho usando gorutinas y canales, lo cual permitio hacer tantos las llamadas a los endpoints como los conteos de manera concurrente. De esa manera se pudo incrementar bastante el rendimiento. Al principio se hicieron de los Challenge de manera sincrona. ¡Llego a tardar de 1 a 2 minutos!
+Todo fue hecho usando gorutinas y canales, lo cual permitio hacer tanto las llamadas a los endpoints como los conteos de manera concurrente. De esa manera se pudo incrementar bastante el rendimiento. Al principio se hicieron los Challenge de manera sincrona. ¡Llego a tardar de 1 a 2 minutos!
 
 Nota: Go no es un lenguaje orientado a objetos, por lo cual la manera de codificar es un poco diferente, y prefiere la composición sobre la herencia.
 
