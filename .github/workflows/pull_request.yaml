@@ -1,0 +1,21 @@
+name: Pull Request Workflow
+
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  full_ci:
+    strategy:
+      matrix:
+        go-version: [ 1.14.x ]
+
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: run tests
+        run: |
+          cd src
+          cd github.com
+          go test 
