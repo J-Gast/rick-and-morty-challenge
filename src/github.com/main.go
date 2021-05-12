@@ -1,71 +1,75 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"rick-and-morty-challenge/src/github.com/analyzers"
+	"rick-and-morty-challenge/src/github.com/utils"
+	"strconv"
 	"time"
 )
 
-func challenge1() {
+func Challenge1() {
 	start := time.Now()
-
-	listOfAnalyzers := make([]analyzers.Analyzer, 3)
-	listOfAnalyzers[0] = &analyzers.LocationsAnalyzer{}
-	listOfAnalyzers[1] = &analyzers.CharactersAnalyzer{}
-	listOfAnalyzers[2] = &analyzers.EpisodeAnalyzer{}
-
-	var listOfChannels [3]chan string
-	for i := range listOfChannels {
-		listOfChannels[i] = make(chan string)
-	}
-
-	for i := 0; i < 3; i++ {
-		listOfAnalyzers[i].Init()
-		go listOfAnalyzers[i].GetAllNames(listOfChannels[i])
-	}
-
-	var locationsNames []string
-	var charactersNames []string
-	var episodeNames []string
-
-	for name := range listOfChannels[0] {
-		locationsNames = append(locationsNames, name)
-	}
-	for name := range listOfChannels[1] {
-		charactersNames = append(charactersNames, name)
-	}
-	for name := range listOfChannels[2] {
-		episodeNames = append(episodeNames, name)
-	}
-
-	var listOfNames [3][]string
-	listOfNames[0] = locationsNames
-	listOfNames[1] = charactersNames
-	listOfNames[2] = episodeNames
-
-	var listOfCountChannels [3]chan int
-	for i := range listOfChannels {
-		listOfCountChannels[i] = make(chan int)
-	}
-
-	for i := 0; i < 3; i++ {
-		go listOfAnalyzers[i].CountLetters(listOfNames[i], listOfCountChannels[i])
-	}
-
+	analyzer := &analyzers.RickAnalyzer{}
+	listOfCountChannels := analyzer.Analyze()
 	fmt.Println("Número de apariciones de la letra l en los nombres de todas las locaciones es: ")
-	fmt.Println(<-listOfCountChannels[0])
+	fmt.Println(listOfCountChannels[0])
 
 	fmt.Println("Número de apariciones de la letra c en los nombres de todos los personajes es: ")
-	fmt.Println(<-listOfCountChannels[1])
+	fmt.Println(listOfCountChannels[1])
 
 	fmt.Println("Número de apariciones de la letra e en los nombres de todos los episodios es: ")
-	fmt.Println(<-listOfCountChannels[2])
+	fmt.Println(listOfCountChannels[2])
 
 	duration := time.Since(start)
-	fmt.Println("Tiempo de ejecución: ")
+	fmt.Print("Tiempo de ejecución: ")
+	fmt.Println(duration)
+}
+
+func Challenge2() {
+	start := time.Now()
+	episodeAnalyzer := &analyzers.EpisodeAnalyzer{}
+	origins := episodeAnalyzer.GetOrigins()
+	for i := 0; i < len(origins); i++ {
+		episodeModel := origins[i]
+		origins := episodeModel.GetListOriginLocations()
+		fmt.Println("El episodio " + strconv.Itoa(episodeModel.ID) + " cuenta con " + strconv.Itoa(episodeModel.GetNumOriginLocations()) + " lugares de origen de los personajes")
+		fmt.Println(origins)
+		fmt.Println("--------------------------")
+	}
+	duration := time.Since(start)
+	fmt.Print("Tiempo de ejecución: ")
 	fmt.Println(duration)
 }
 
 func main() {
-	challenge1()
+	reader := bufio.NewReader(os.Stdin)
+	cleaner := utils.Cleaner{}
+	cleaner.Init()
+	for {
+		cleaner.CallClear()
+		fmt.Println("---------------------")
+		fmt.Println("¡Bienvenido al Rick and Morty Challenge!")
+		fmt.Println("Presiona 1 para ejecutar el Challenge 1.")
+		fmt.Println("Presiona 2 para ejecutar el Challenge 2.")
+		fmt.Println("---------------------")
+		opt, _, err := reader.ReadRune()
+		if err != nil {
+			fmt.Println(err)
+		}
+		switch opt {
+		case '1':
+			Challenge1()
+			fmt.Print("Presiona Enter para continuar...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+			break
+		case '2':
+			Challenge2()
+			fmt.Print("Presiona Enter para continuar...")
+			bufio.NewReader(os.Stdin).ReadBytes('\n')
+			break
+		}
+	}
 }
